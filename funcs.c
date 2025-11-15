@@ -54,8 +54,18 @@ int is_equal_vector(const Vector *v1, const Vector *v2) {
     }
 
     for (size_t i = 0; i < v1->size; i++) {
-        if (v1->data[i] != v2->data[i]) {
-            return 0;
+        if (v1->CopyVoidPtr != NULL) {
+            VECTOR_TYPE copy1 = v1->CopyVoidPtr(v1->data[i]);
+            VECTOR_TYPE copy2 = v2->CopyVoidPtr(v2->data[i]);
+            int result = (*(int*)copy1 == *(int*)copy2);
+            v1->DeleteVoidPtr(copy1);
+            v2->DeleteVoidPtr(copy2);
+            if (!result) return 0;
+        }
+        else {
+            if (*(int*)v1->data[i] != *(int*)v2->data[i]) {
+                return 0;
+            }
         }
     }
     return 1;
@@ -196,4 +206,15 @@ void delete_vector(Vector *v) {
 
     erase_vector(v);
     free(v);
+}
+
+int* copy_int(int* x) {
+    if (x == NULL) return NULL;
+    int* copy = (int*)malloc(sizeof(int));
+    *copy = *x;
+    return copy;
+}
+
+void delete_int(int* x) {
+    free(x);
 }

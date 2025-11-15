@@ -1,17 +1,6 @@
 #include <stdio.h>
 #include "funcs.h"
 
-int* copy_int(int* value) {
-    if (value == NULL) return NULL;
-    int* copy = (int*)malloc(sizeof(int));
-    *copy = *value;
-    return copy;
-}
-
-void delete_int(int* value) {
-    free(value);
-}
-
 int main() {
     Vector v = create_vector(2, 
         (VECTOR_TYPE(*)(VECTOR_TYPE))copy_int, 

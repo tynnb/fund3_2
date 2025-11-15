@@ -23,4 +23,7 @@ void delete_at_vector(Vector *v, size_t index);
 VECTOR_TYPE get_at_vector(const Vector *v, size_t index);
 void delete_vector(Vector *v);
 
+int* copy_int(int* x);
+void delete_int(int* x);
+
 #endif
