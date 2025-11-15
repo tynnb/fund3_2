@@ -80,9 +80,9 @@ void copy_vector(Vector *dest, const Vector *src) {
         return;
     }
 
-    for (size_t i = 0; i < scr->size; i++) {
-        if (scr->CopyVoidPtr != NULL) {
-            dest->data[i] = src->CopyVoidPtr(src->data[i])
+    for (size_t i = 0; i < src->size; i++) {
+        if (src->CopyVoidPtr != NULL) {
+            dest->data[i] = src->CopyVoidPtr(src->data[i]);
         }
         else {
             dest->data[i] = src->data[i];
@@ -113,7 +113,7 @@ Vector *copy_vector_new(const Vector *src) {
 
     for (size_t i = 0; i < src->size; i++) {
         if (src->CopyVoidPtr != NULL) {
-            new_vector->data[i] = src->CopyVoidPtr(src->data[i])
+            new_vector->data[i] = src->CopyVoidPtr(src->data[i]);
         }
         else {
             new_vector->data[i] = src->data[i];
@@ -136,7 +136,7 @@ void push_back_vector(Vector *v, VECTOR_TYPE value) {
             new_capacity = v->capacity * 2;
         }
     
-        VECTOR_TYPE new_data* = realloc(v->data, sizeof(VECTOR_TYPE) * new_capacity);
+        VECTOR_TYPE *new_data = realloc(v->data, sizeof(VECTOR_TYPE) * new_capacity);
         if (new_data == NULL) {
             return;
         }
@@ -167,7 +167,7 @@ void delete_at_vector(Vector *v, size_t index) {
     }
 
     for (size_t i = index; i < v->size - 1; i++) {
-        v->data[i] = ev->data[i + 1]
+        v->data[i] = v->data[i + 1];
     }
     v->size--;
 }

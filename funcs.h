@@ -1,11 +1,9 @@
 #ifndef FUNCS
 #define FUNCS
 
-#include <stddef.h>
+#include <stdlib.h>
 
-#ifndef VECTOR_TYPE
 #define VECTOR_TYPE void*
-#endif
 
 typedef struct {
     VECTOR_TYPE *data;
