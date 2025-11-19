@@ -3,6 +3,7 @@
 Vector create_vector(size_t initial_capacity, VECTOR_TYPE (*CopyFunc)(VECTOR_TYPE), void (*DeleteFunc)(VECTOR_TYPE)) {
     Vector vector;
     vector.size = 0;
+    
     if (initial_capacity == 0) {
         vector.capacity = 1;
     }
@@ -27,8 +28,8 @@ void erase_vector(Vector *v) {
     }
 
     if (v->data != NULL) {
-        for (size_t i = 0; i < v->size; i++) {
-            if (v->DeleteVoidPtr != NULL) {
+        if (v->DeleteVoidPtr != NULL) {
+            for (size_t i = 0; i < v->size; i++) {
                 v->DeleteVoidPtr(v->data[i]);
             }
         }
@@ -54,18 +55,8 @@ int is_equal_vector(const Vector *v1, const Vector *v2) {
     }
 
     for (size_t i = 0; i < v1->size; i++) {
-        if (v1->CopyVoidPtr != NULL) {
-            VECTOR_TYPE copy1 = v1->CopyVoidPtr(v1->data[i]);
-            VECTOR_TYPE copy2 = v2->CopyVoidPtr(v2->data[i]);
-            int result = (*(int*)copy1 == *(int*)copy2);
-            v1->DeleteVoidPtr(copy1);
-            v2->DeleteVoidPtr(copy2);
-            if (!result) return 0;
-        }
-        else {
-            if (*(int*)v1->data[i] != *(int*)v2->data[i]) {
-                return 0;
-            }
+        if (v1->data[i] != v2->data[i]) {
+            return 0;
         }
     }
     return 1;
@@ -76,7 +67,14 @@ void copy_vector(Vector *dest, const Vector *src) {
         return;
     }
 
-    erase_vector(dest);
+    if (dest->data != NULL) {
+        if (dest->DeleteVoidPtr != NULL) {
+            for (size_t i = 0; i < dest->size; i++) {
+                dest->DeleteVoidPtr(dest->data[i]);
+            }
+        }
+        free(dest->data);
+    }
 
     dest->capacity = src->capacity;
     dest->size = src->size;
@@ -93,8 +91,7 @@ void copy_vector(Vector *dest, const Vector *src) {
     for (size_t i = 0; i < src->size; i++) {
         if (src->CopyVoidPtr != NULL) {
             dest->data[i] = src->CopyVoidPtr(src->data[i]);
-        }
-        else {
+        } else {
             dest->data[i] = src->data[i];
         }
     }
@@ -124,8 +121,7 @@ Vector *copy_vector_new(const Vector *src) {
     for (size_t i = 0; i < src->size; i++) {
         if (src->CopyVoidPtr != NULL) {
             new_vector->data[i] = src->CopyVoidPtr(src->data[i]);
-        }
-        else {
+        } else {
             new_vector->data[i] = src->data[i];
         }
     }
@@ -141,8 +137,7 @@ void push_back_vector(Vector *v, VECTOR_TYPE value) {
         size_t new_capacity;
         if (v->capacity == 0) {
             new_capacity = 1;
-        }
-        else {
+        } else {
             new_capacity = v->capacity * 2;
         }
     
@@ -156,8 +151,7 @@ void push_back_vector(Vector *v, VECTOR_TYPE value) {
 
     if (v->CopyVoidPtr != NULL) {
         v->data[v->size] = v->CopyVoidPtr(value);
-    }
-    else {
+    } else {
         v->data[v->size] = value;
     }
     v->size++;
@@ -184,17 +178,16 @@ void delete_at_vector(Vector *v, size_t index) {
 
 VECTOR_TYPE get_at_vector(const Vector *v, size_t index) {
     if (v == NULL) {
-        return NULL;
+        return 0;
     }
 
     if (index >= v->size) {
-        return NULL;
+        return 0;
     }
 
     if (v->CopyVoidPtr != NULL) {
         return v->CopyVoidPtr(v->data[index]);
-    }
-    else {
+    } else {
         return v->data[index];
     }
 }
@@ -208,13 +201,10 @@ void delete_vector(Vector *v) {
     free(v);
 }
 
-int* copy_int(int* x) {
-    if (x == NULL) return NULL;
-    int* copy = (int*)malloc(sizeof(int));
-    *copy = *x;
-    return copy;
+VECTOR_TYPE copy_int(VECTOR_TYPE x) {
+    return x;
 }
 
-void delete_int(int* x) {
-    free(x);
+void delete_int(VECTOR_TYPE x) {
+    (void)x;
 }

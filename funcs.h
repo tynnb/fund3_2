@@ -2,8 +2,9 @@
 #define FUNCS
 
 #include <stdlib.h>
+#include <stdio.h>
 
-#define VECTOR_TYPE void*
+#define VECTOR_TYPE int
 
 typedef struct {
     VECTOR_TYPE *data;
@@ -23,7 +24,7 @@ void delete_at_vector(Vector *v, size_t index);
 VECTOR_TYPE get_at_vector(const Vector *v, size_t index);
 void delete_vector(Vector *v);
 
-int* copy_int(int* x);
-void delete_int(int* x);
+VECTOR_TYPE copy_int(VECTOR_TYPE x);
+void delete_int(VECTOR_TYPE x);
 
 #endif
